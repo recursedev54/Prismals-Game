@@ -7,6 +7,7 @@ from world import World
 from higherentities.player import Player
 from higherentities.update import Update
 from highestentities.collide import Collide
+from LVX.LVX import LVX  # Import LVX
 from utils import init_opengl
 
 # Initialize Pygame
@@ -28,6 +29,12 @@ player = Player(x=5, y=5, z=10)
 camera = Camera(player=player)
 world = World(width=10, height=10)
 collide = Collide(player, world.objects)
+lvx = LVX()
+
+# Add entities using LVX and assign to godforms
+world.objects.append(lvx.generate_blawg(0, 0, 0))  # Isis -> Blawg
+world.objects.append(lvx.generate_wedge(2, 0, 2))  # Typhon -> Wedge
+world.objects.append(lvx.generate_womp(-2, 0, -2))  # Apophis -> Womp
 
 # Hide mouse cursor and capture it
 pygame.mouse.set_visible(False)
@@ -63,6 +70,11 @@ while running:
 
     world.render_world()
     collide.render_collision_boxes()
+
+    # Draw LVX entities with colliders
+    for obj in world.objects:
+        if isinstance(obj, (lvx.isis.create_blawg, lvx.apophis.create_womp, lvx.typhon.create_wedge)):
+            lvx.quarn.draw(obj)
 
     # Display update
     pygame.display.flip()
