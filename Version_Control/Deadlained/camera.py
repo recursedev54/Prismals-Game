@@ -1,5 +1,5 @@
+from Version_Control.Deadlained.higherentities.player import Player
 import numpy as np
-from higherentities.player import Player
 
 class Camera:
     def __init__(self, player):

@@ -1,5 +1,10 @@
-import pygame
 import sys
+import os
+
+# Add Version_Control directory to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import pygame
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from Version_Control.Deadlained.camera import Camera
