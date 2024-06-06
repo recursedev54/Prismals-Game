@@ -2,11 +2,11 @@ import pygame
 import sys
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from camera import Camera
-from world import World
-from higherentities.player import Player
-from utils import init_opengl
-from Deadlock.sunbird import sunbird  # Import the sunbird function
+from Version_Control.Deadlained.camera import Camera
+from Version_Control.Deadlained.world import World
+from Version_Control.Deadlained.higherentities.player import Player
+from Version_Control.Deadlained.utils import init_opengl
+from Version_Control.Deadlained.Deadlock.sunbird import sunbird
 
 # Initialize modules
 sunbird()
