@@ -2,8 +2,9 @@ from OpenGL.GL import *
 from entities.blawg import Blawg
 from entities.wedge import Wedge
 from entities.womp import Womp
-from entities.plane import Plane  # Import the Plane entity
+from entities.plane import Plane
 from entities.wate import Wate
+from entities.sky_ceiling import SkyCeiling  # Import the SkyCeiling entity
 
 class World:
     def __init__(self, width=10, height=10):
@@ -16,7 +17,8 @@ class World:
             Wedge(2, 0, 2),
             Womp(-2, 0, -2),
             Plane(1, 0, -1),  # Add an instance of Plane
-            Wate(0, -1, 0)  # Wate is below the Blawg
+            Wate(0, -1, 0),  # Wate is below the Blawg
+            SkyCeiling(0, 10, 0)  # Add an instance of SkyCeiling 10 Blawgs above
         ]
 
     def init_blawgs(self):
