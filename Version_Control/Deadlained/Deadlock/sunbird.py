@@ -1,5 +1,5 @@
 import importlib
-from Version_Control.Deadlained.sunbird_feather import refresh_sunbird
+from ..sunbird_feather import refresh_sunbird
 
 def sunbird():
     modules = [
@@ -8,7 +8,7 @@ def sunbird():
         'Version_Control.Deadlained.LVX.Godforms.isis',
         'Version_Control.Deadlained.LVX.Godforms.apophis',
         'Version_Control.Deadlained.Deadlock.Deadlane.Shem_HaMephorash.Shem_HaMephorash',
-        'Version_Control.Deadlained.GodHeads.zues',
+        'Version_Control.Deadlained.GodHeads.zeus',
         'Version_Control.Deadlained.GodHeads.precis',
         'Version_Control.Deadlained.GodHeads.cardinaltron',
         'Version_Control.Deadlained.GodHeadVoices.characters.tsu.summit',

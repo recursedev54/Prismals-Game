@@ -1,3 +1,5 @@
+# Version_Control/Deadlained/utils.py
+
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -9,7 +11,7 @@ def init_opengl(width, height):
     glEnable(GL_DEPTH_TEST)
     glShadeModel(GL_SMOOTH)
     glMatrixMode(GL_PROJECTION)
-    gluPerspective(45.0, float(width)/float(height), 0.1, 100.0)
+    gluPerspective(45.0, float(width) / float(height), 0.1, 100.0)
     glMatrixMode(GL_MODELVIEW)
 
 def handle_keyboard():

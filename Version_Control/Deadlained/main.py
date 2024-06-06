@@ -1,72 +1,52 @@
-import sys
 import os
+import sys
+import pygame
+from pygame.locals import *
+from OpenGL.GL import *  # Import everything from OpenGL.GL
+from OpenGL.GLUT import *  # Import everything from OpenGL.GLUT
+import numpy as np
 
-# Add Version_Control directory to sys.path
+# Add the Version_Control directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import pygame
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from Version_Control.Deadlained.camera import Camera
-from Version_Control.Deadlained.world import World
-from Version_Control.Deadlained.higherentities.player import Player
-from Version_Control.Deadlained.utils import init_opengl
-from Version_Control.Deadlained.Deadlock.sunbird import sunbird
+from Deadlained.camera import Camera
+from Deadlained.world import World
+from Deadlained.utils import some_util_function  # Replace with actual utility function if needed
 
-# Initialize modules
-sunbird()
+def sunbird():
+    # Add sunbird function details here
+    pass
 
-# Initialize Pygame
-pygame.init()
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600), DOUBLEBUF | OPENGL)
+    pygame.display.set_caption("Prismals Game")
 
-# Constants
-FPS = 48
+    # Initialize the world and camera
+    world = World()
+    camera = Camera(world.player)
 
-# Set up display
-screen = pygame.display.set_mode((0, 0), pygame.OPENGL | pygame.DOUBLEBUF | pygame.FULLSCREEN)
-pygame.display.set_caption("4D Hydrogel Game")
-clock = pygame.time.Clock()
+    # OpenGL settings
+    glEnable(GL_DEPTH_TEST)  # Enable depth testing
 
-# Initialize OpenGL
-init_opengl(screen.get_width(), screen.get_height())
+    # Main game loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                running = False
 
-# Initialize player, camera, and world
-player = Player(x=5, y=5, z=10)
-camera = Camera(player=player)
-world = World(width=10, height=10)
+        # Update game logic
+        world.update()
+        
+        # Render the scene
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        world.draw()
+        pygame.display.flip()
+        pygame.time.wait(10)
 
-# Hide mouse cursor and capture it
-pygame.mouse.set_visible(False)
-pygame.event.set_grab(True)
+    pygame.quit()
 
-# Game loop
-running = True
-while running:
-    delta_time = clock.tick(FPS) / 1000.0
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEMOTION:
-            player.handle_mouse(event.rel[0], event.rel[1])
-    
-    # Update player
-    player.update(delta_time)
-    world.update()
-
-    # Render
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glLoadIdentity()
-    front = player.get_front()
-    gluLookAt(
-        player.position.x, player.position.y, player.position.z,
-        player.position.x + front.x, player.position.y + front.y, player.position.z + front.z,
-        0, 1, 0
-    )
-
-    world.draw()
-
-    # Display update
-    pygame.display.flip()
-
-pygame.quit()
-sys.exit()
+if __name__ == "__main__":
+    sunbird()
+    main()

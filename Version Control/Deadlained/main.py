@@ -1,67 +1,53 @@
-import pygame
 import sys
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from camera import Camera
-from world import World
+import os
+
+# Add the root of the project to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from QRate.initialize_J import initialize_J
+from Deadlained.camera import Camera
+from Deadlained.world import World
 from higherentities.player import Player
-from utils import init_opengl
-from Deadlock.sunbird import sunbird  # Import the sunbird function
+from higherentities.render import Render
+from higherentities.update import Update
+from highestentities.collide import Collide
+from Deadlained.sunbird_feather import initialize_game
+from Deadlained.utils import init_opengl, handle_keyboard  # Use actual functions from utils.py
+import pygame
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
 
-# Initialize modules
-sunbird()
+def main():
+    try:
+        initialize_J()  # Initialize J
+        initialize_game()  # Initialize game settings
+        
+        pygame.init()
+        display = (800, 600)
+        pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+        init_opengl(display[0], display[1])  # Initialize OpenGL with display dimensions
 
-# Initialize Pygame
-pygame.init()
+        camera = Camera()
+        world = World()
 
-# Constants
-FPS = 48
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                handle_keyboard()  # Handle keyboard events
 
-# Set up display
-screen = pygame.display.set_mode((0, 0), pygame.OPENGL | pygame.DOUBLEBUF | pygame.FULLSCREEN)
-pygame.display.set_caption("4D Hydrogel Game")
-clock = pygame.time.Clock()
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+            world.update()
+            world.draw()
+            pygame.display.flip()
+            pygame.time.wait(10)
 
-# Initialize OpenGL
-init_opengl(screen.get_width(), screen.get_height())
+    except ImportError as e:
+        print(f"Import error: {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
-# Initialize player, camera, and world
-player = Player(x=5, y=5, z=10)
-camera = Camera(player=player)
-world = World(width=10, height=10)
-
-# Hide mouse cursor and capture it
-pygame.mouse.set_visible(False)
-pygame.event.set_grab(True)
-
-# Game loop
-running = True
-while running:
-    delta_time = clock.tick(FPS) / 1000.0
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEMOTION:
-            player.handle_mouse(event.rel[0], event.rel[1])
-    
-    # Update player
-    player.update(delta_time)
-    world.update()
-
-    # Render
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glLoadIdentity()
-    front = player.get_front()
-    gluLookAt(
-        player.position.x, player.position.y, player.position.z,
-        player.position.x + front.x, player.position.y + front.y, player.position.z + front.z,
-        0, 1, 0
-    )
-
-    world.draw()
-
-    # Display update
-    pygame.display.flip()
-
-pygame.quit()
-sys.exit()
+if __name__ == "__main__":
+    main()
