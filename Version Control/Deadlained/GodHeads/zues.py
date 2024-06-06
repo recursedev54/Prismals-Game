@@ -2,6 +2,9 @@ from LVX.Godforms.typhon import Typhon
 from Deadlock.Deadlane.Shem_HaMephorash.Shem_HaMephorash import ShemHaMephorash
 from Deadlock.GodHeadVoices.characters.tsu.summit import Summit
 from Deadlock.GodHeadVoices.characters.c.chaga import Chaga
+from Deadlock.LUX.LUX import LUX
+from Deadlock.LUX.DUX import DUX
+from Deadlock.LUX.DEX import DEX
 
 ZEUS_CONSTANT = "#00FFFF"  # Cyan color
 ZEUS_UNRESOLVED_CONSTANT = "#FFFF00"  # Yellow color for unresolved
@@ -18,7 +21,11 @@ class Zeus:
             self.color = ZEUS_UNRESOLVED_CONSTANT  # Set to yellow if unresolved
             self.typhon = Typhon()  # Create a new Typhon instance if unresolved
         else:
-            if self.summit.primary_color == self.chaga.primary_color or self.summit.secondary_color == self.chaga.secondary_color:
+            lux_validator = LUX(self.summit.primary_color, self.chaga.primary_color)
+            dux_validator = DUX(self.summit.primary_color, self.chaga.primary_color)
+            dex_validator = DEX(self.summit.primary_color, self.chaga.primary_color)
+
+            if lux_validator.validate() or dux_validator.validate() or dex_validator.validate():
                 resolver = ShemHaMephorash(self, self.typhon)
                 resolver.resolve_conflict()
                 if resolver.godform is None:
