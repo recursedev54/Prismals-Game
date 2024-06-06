@@ -6,7 +6,9 @@ from entities.plane import Plane
 from entities.wate import Wate
 from entities.sky_ceiling import SkyCeiling
 from entities.blake import Blake
-from higherentities.render import Render  # Import the Render class
+from entities.collision_blawg import CollisionBlawg
+from higherentities.render import Render
+from highestentities.draw import Draw
 
 class World:
     def __init__(self, width=10, height=10):
@@ -23,7 +25,8 @@ class World:
             SkyCeiling(0, 10, 0),
             Blake(0, 0, 1)
         ]
-        self.render = Render()  # Initialize the Render class
+        self.render = Render()
+        self.draw_entity = Draw()
 
     def init_blawgs(self):
         for x in range(self.width):
@@ -31,7 +34,7 @@ class World:
                 if (x + y) % 2 == 0:
                     self.grid[x][y] = Blawg(x, 0, y)
 
-    def draw(self):
+    def render_world(self):
         for x in range(self.width):
             for y in range(self.height):
                 if self.grid[x][y] is not None:
@@ -44,19 +47,14 @@ class World:
                         if b is not None and self.render.combine_blawg_and_blake(b, obj):
                             self.objects.remove(obj)
                             self.grid[b.position[0]][b.position[2]] = None
+                            self.draw_entity.add_collision_blawg(CollisionBlawg(*b.position))
                             break
             else:
                 obj.draw()
 
-        self.render.render()  # Render the combined CollisionBlawgs
+        self.render.render()
+        self.draw_entity.draw_collision_blawg()
 
-    def update(self):
+    def update(self, delta_time):
         for obj in self.objects:
             obj.update()
-
-    def place_blake(self, x, y, z):
-        for obj in self.objects:
-            if isinstance(obj, Blawg) and obj.position == (x, y, z):
-                obj.place_blake()
-                return
-        self.objects.append(Blake(x, y, z))

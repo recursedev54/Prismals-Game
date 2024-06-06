@@ -5,6 +5,7 @@ from OpenGL.GLU import *
 from camera import Camera
 from world import World
 from higherentities.player import Player
+from higherentities.update import Update  # Import the Update class
 from utils import init_opengl
 
 # Initialize Pygame
@@ -34,6 +35,7 @@ pygame.event.set_grab(True)
 running = True
 while running:
     delta_time = clock.tick(FPS) / 1000.0
+    updater = Update(world, delta_time)  # Create an instance of Update
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -44,7 +46,7 @@ while running:
     
     # Update player
     player.update(delta_time)
-    world.update()
+    updater.update_world()  # Call the update method from Update
 
     # Render
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -56,7 +58,7 @@ while running:
         0, 1, 0
     )
 
-    world.draw()
+    world.render_world()  # Call the renamed method
 
     # Display update
     pygame.display.flip()
