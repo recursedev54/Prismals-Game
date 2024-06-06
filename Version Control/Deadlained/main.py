@@ -5,7 +5,8 @@ from OpenGL.GLU import *
 from camera import Camera
 from world import World
 from higherentities.player import Player
-from higherentities.update import Update  # Import the Update class
+from higherentities.update import Update
+from highestentities.collide import Collide
 from utils import init_opengl
 
 # Initialize Pygame
@@ -26,6 +27,7 @@ init_opengl(screen.get_width(), screen.get_height())
 player = Player(x=5, y=5, z=10)
 camera = Camera(player=player)
 world = World(width=10, height=10)
+collide = Collide(player, world.objects)
 
 # Hide mouse cursor and capture it
 pygame.mouse.set_visible(False)
@@ -35,7 +37,7 @@ pygame.event.set_grab(True)
 running = True
 while running:
     delta_time = clock.tick(FPS) / 1000.0
-    updater = Update(world, delta_time)  # Create an instance of Update
+    updater = Update(world, delta_time)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -46,7 +48,8 @@ while running:
     
     # Update player
     player.update(delta_time)
-    updater.update_world()  # Call the update method from Update
+    updater.update_world()
+    collide.update()
 
     # Render
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -58,7 +61,8 @@ while running:
         0, 1, 0
     )
 
-    world.render_world()  # Call the renamed method
+    world.render_world()
+    collide.render_collision_boxes()
 
     # Display update
     pygame.display.flip()
