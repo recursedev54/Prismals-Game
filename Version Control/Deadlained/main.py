@@ -39,6 +39,8 @@ while running:
             running = False
         elif event.type == pygame.MOUSEMOTION:
             player.handle_mouse(event.rel[0], event.rel[1])
+        else:
+            player.handle_event(event)
     
     # Update player
     player.update(delta_time)

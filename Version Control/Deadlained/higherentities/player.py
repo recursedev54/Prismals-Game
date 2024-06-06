@@ -7,28 +7,39 @@ class Player:
         self.velocity = pygame.math.Vector3(0, 0, 0)
         self.acceleration = pygame.math.Vector3(0, 0, 0)
         self.on_ground = False
-        self.speed = 5.0
+        self.space_pressed = False
         self.jump_strength = 5.0
+        self.gravity = -9.8
         self.yaw = 0
         self.pitch = 0
+        self.jump_timer = 0  # Timer to manage jump duration
+        self.jump_duration = 1  # Duration of the jump in seconds
 
     def handle_input(self, delta_time):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
-            self.position += self.get_front() * self.speed * delta_time
+            self.position += self.get_front() * self.jump_strength * delta_time
         if keys[pygame.K_s]:
-            self.position -= self.get_front() * self.speed * delta_time
+            self.position -= self.get_front() * self.jump_strength * delta_time
         if keys[pygame.K_a]:
-            self.position -= self.get_right() * self.speed * delta_time
+            self.position -= self.get_right() * self.jump_strength * delta_time
         if keys[pygame.K_d]:
-            self.position += self.get_right() * self.speed * delta_time
-        if keys[pygame.K_SPACE] and self.on_ground:
-            self.velocity.y = self.jump_strength
-            self.on_ground = False
+            self.position += self.get_right() * self.jump_strength * delta_time
+
+    def handle_event(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                self.space_pressed = True
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_SPACE:
+                self.space_pressed = False
+                if self.on_ground:
+                    self.velocity.y = self.jump_strength
+                    self.on_ground = False
+                    self.jump_timer = self.jump_duration  # Start the jump timer
 
     def apply_gravity(self, delta_time):
-        gravity = -9.8
-        self.acceleration.y = gravity * delta_time
+        self.acceleration.y = self.gravity * delta_time
         self.velocity += self.acceleration * delta_time
         self.position += self.velocity * delta_time
 
@@ -40,6 +51,12 @@ class Player:
     def update(self, delta_time):
         self.apply_gravity(delta_time)
         self.handle_input(delta_time)
+
+        # Update the jump timer
+        if self.jump_timer > 0:
+            self.jump_timer -= delta_time
+            if self.jump_timer <= 0:
+                self.velocity.y = 0  # Reset vertical velocity when timer ends
 
     def handle_mouse(self, xrel, yrel):
         self.yaw += xrel * 0.1
