@@ -79,8 +79,8 @@ class Collide:
             # Draw bounding sphere for Womp
             self.draw_bounding_sphere(x, y, z, size)
         elif isinstance(obj, Wedge):
-            # Draw bounding octahedron for Wedge
-            self.draw_bounding_octahedron(x, y, z, size)
+            # Draw bounding prism for Wedge
+            self.draw_bounding_prism(x, y, z, size)
         elif isinstance(obj, Blawg):
             # Draw larger bounding box for Blawg
             self.draw_bounding_cube(x, y, z, 1.0)
@@ -104,21 +104,23 @@ class Collide:
             glVertex3f(x + radius * get_cos(theta), y + radius * get_sin(theta), z)
             glVertex3f(x + radius * get_cos(next_theta), y + radius * get_sin(next_theta), z)
 
-    def draw_bounding_octahedron(self, x, y, z, size):
-        # Draw the lines of the bounding octahedron
+    def draw_bounding_prism(self, x, y, z, size):
+        # Draw the lines of the bounding prism (triangular prism)
+        height = size
+        half_base = size / 2
         vertices = [
-            (x, y + size, z), (x + size, y, z),
-            (x, y + size, z), (x - size, y, z),
-            (x, y + size, z), (x, y, z + size),
-            (x, y + size, z), (x, y, z - size),
-
-            (x, y - size, z), (x + size, y, z),
-            (x, y - size, z), (x - size, y, z),
-            (x, y - size, z), (x, y, z + size),
-            (x, y - size, z), (x, y, z - size)
+            (x - half_base, y - height, z - half_base), (x + half_base, y - height, z - half_base),
+            (x, y - height, z + half_base), (x - half_base, y + height, z - half_base),
+            (x + half_base, y + height, z - half_base), (x, y + height, z + half_base)
         ]
-        for edge in vertices:
-            glVertex3fv(edge)
+        edges = [
+            (0, 1), (1, 2), (2, 0),  # Base triangle
+            (3, 4), (4, 5), (5, 3),  # Top triangle
+            (0, 3), (1, 4), (2, 5)   # Vertical edges
+        ]
+        for edge in edges:
+            glVertex3fv(vertices[edge[0]])
+            glVertex3fv(vertices[edge[1]])
 
     def draw_bounding_cube(self, x, y, z, size):
         # Draw the lines of the bounding box
